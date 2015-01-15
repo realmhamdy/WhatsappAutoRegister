@@ -1,0 +1,2 @@
+# install libncurses5-dev if necessary
+yowsup2

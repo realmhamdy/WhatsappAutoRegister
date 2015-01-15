@@ -1,0 +1,15 @@
+Main Server:
+============
+31.187.70.209
+root
+deomnas15454
+
+FreePBX Administration:
+========================
+root
+axx22$$AAAA
+107.155.108.133
+
+It seems I'll need to extract the registration code from yowsup.
+I also need to understand the unhelpful output from yowsup-cli. To know
+how to get it in my script.

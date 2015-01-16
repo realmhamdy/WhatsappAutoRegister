@@ -8,7 +8,7 @@ from os import path
 class WhatsappLogger(Logger):
   
   def __init__(self, log_dir, *args, **kwargs):
-    super(WhatsappLogger, self).__init__(*args, **kwargs)
+    super(WhatsappLogger, self).__init__("WhatsappLogger", *args, **kwargs)
     self.log_dir = log_dir
     self.setupLog()
 

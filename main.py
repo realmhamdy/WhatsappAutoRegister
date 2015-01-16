@@ -39,7 +39,7 @@ def make_registration_requests(numbers_file, wav_dir="/var/spool/asterisk/monito
         else:
           logging.warn("Couldn't find file with suitable id")
     else: # unsuccessful number
-      logging.warn("Request was not successful. status '{}'".format(result["status"]))
+      logger.warn("Request was not successful. status '{}'".format(result["status"]))
       open(path.join("/root/textvoice", result["status"] + ".txt"), "wt").write(country_code+phone)
             
     # sleep between requests

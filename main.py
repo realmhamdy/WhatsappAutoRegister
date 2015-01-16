@@ -52,4 +52,4 @@ if __name__ == "__main__":
   parser.add_argument("--wav_wait", type=int, default=240, help="time to wait for wav files to be downloaded (secs)")
   parser.add_argument("--req_sleep", type=int, default=1, help="time to sleep between whatsapp requests")
   args = parser.parse_args()
-  make_registration_requests(args.numbers_file, args.wav_dir, args.wav_wait, args.req_sleep, args.debug)
+  make_registration_requests(args.numbers_file, args.wav_dir, args.wav_wait, args.req_sleep)

@@ -30,13 +30,15 @@ def make_registration_requests(numbers_file, wav_dir="/var/spool/asterisk/monito
             open("/root/textvoice/success.txt", 'wt').write(country_code+phone + 
                 "," + token + "," + account_id + "\n")
             break
+    else: # unsuccessful number
+      open(path.join("/root/textvoice", result["status"] + ".txt"), "wt").write(country_code+phone)
+            
     # sleep between requests
     sleep(request_sleep)
     
 if __name__ == "__main__":
   parser = ArgumentParser()
   parser.add_argument("-f", "--numbers_file", help="the file that contains numbers to query")
-  parser.add_argument("-o", "--output")
   parser.add_argument("--wav_dir", default="/var/spool/asterisk/monitor/")
   parser.add_argument("--wav_wait", type=int, default=210, help="time to wait for wav files to be downloaded (secs)")
   parser.add_argument("--req_sleep", type=int, default=1, help="time to sleep between whatsapp requests")

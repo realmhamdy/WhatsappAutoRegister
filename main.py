@@ -17,7 +17,7 @@ from whatsauto.log import WhatsappLogger
 def make_registration_requests(work_dir, speech_dir, wav_wait_secs=240, request_sleep=1):
   numbers_file = path.join(work_dir, "numbers.txt")
   number_generator = read_numbers_file(numbers_file)
-  logger = WhatsappLogger("/root/textvoice")
+  logger = WhatsappLogger(work_dir)
   for (country_code, phone, id_) in number_generator:
     logger.log(logging.DEBUG, "Registering {}-{}".format(country_code, phone))
     result = make_registration_request(country_code, phone)
@@ -35,7 +35,7 @@ def make_registration_requests(work_dir, speech_dir, wav_wait_secs=240, request_
             regcode = get_text_from_speech(work_dir, complete_wav_path)
             token = get_token()
             account_id = get_account_id(work_dir, country_code+phone)
-            open("/root/textvoice/success.txt", 'wt').write(country_code+phone + 
+            open(path.join(work_dir, "success.txt"), 'wt').write(country_code+phone + 
                 "," + token + "," + account_id + "\n")
             remove(complete_wav_path)
             wav_file_found = True
@@ -46,7 +46,7 @@ def make_registration_requests(work_dir, speech_dir, wav_wait_secs=240, request_
         logger.log(logging.WARN, "Couldn't find file with suitable id")
     else: # unsuccessful number
       logger.log(logging.WARN, "Request was not successful. status '{}'".format(result["status"]))
-      open(path.join("/root/textvoice", result["status"] + ".txt"), "wt").write(country_code+phone)
+      open(path.join(work_dir, result["status"] + ".txt"), "wt").write(country_code+phone)
             
     # sleep between requests
     sleep(request_sleep)

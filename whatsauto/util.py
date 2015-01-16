@@ -10,6 +10,7 @@ import codecs
 from subprocess import Popen
 from tempfile import TemporaryFile
 import json
+from os import path
 from yowsup.registration import WACodeRequest
 
 def generate_random_phone_numbers():
@@ -60,11 +61,11 @@ def read_numbers_file(path_numbers):
       country_code, phone = cc_phone.split('-')
       yield country_code, phone, _id
       
-def get_text_from_speech(wav_path):
+def get_text_from_speech(work_dir, wav_path):
   number_words = {"one":'1', "two":'2', "three":'3', "four":'4', "five":'5', 
                   "six":'6', "seven":'7', "eight":'8', "nine":'9', "zero":'0'}
   out = TemporaryFile()
-  info_command = Popen(["/root/textvoice/speech_to_text", wav_path], stdout=out)
+  info_command = Popen([path.join(work_dir, "speech_to_text"), wav_path], stdout=out)
   info_command.wait()
   out.seek(0)
   result = json.loads(out.read())
@@ -77,16 +78,16 @@ def get_text_from_speech(wav_path):
         break
   return numbers_found
 
-def get_token():
+def get_token(work_dir):
   out = TemporaryFile()
-  get_token_command = Popen(["php", "/root/textvoice/get-token.php"], stdout=out)
+  get_token_command = Popen(["php", path.join(work_dir, "get-token.php")], stdout=out)
   get_token_command.wait()
   out.seek(0)
   return out.read()
 
-def get_account_id(phone_number):
+def get_account_id(work_dir, phone_number):
   out = TemporaryFile()
-  wart_command = Popen(["xvfb-run", "mono", "WART.exe", "id" "raw=true" "number={}".format(phone_number)],
+  wart_command = Popen(["xvfb-run", "mono", path.join(work_dir, "WART.exe"), "id" "raw=true" "number={}".format(phone_number)],
                        stdout=out)
   wart_command.wait()
   out.seek(0)

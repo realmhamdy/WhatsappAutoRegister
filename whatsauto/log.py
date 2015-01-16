@@ -19,3 +19,7 @@ class WhatsappLogger(Logger):
     self.addHandler(handler)
     handler.setFormatter(logging.Formatter('%(levelname)s @ [%(asctime)s] :: %(message)s',
                                        datefmt="%Y-%m-%d %H:%M:%S"))
+    
+  def log(self, level, msg, *args, **kwargs):
+    Logger.log(self, level, msg, *args, **kwargs)
+    print(msg)

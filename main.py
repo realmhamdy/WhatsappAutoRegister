@@ -9,12 +9,12 @@ import logging
 from argparse import ArgumentParser
 from time import sleep
 from os import walk as traverse_dir
-from os import path
+from os import path, remove
 from whatsauto.util import (make_registration_request, read_numbers_file, get_text_from_speech,
                             get_token, get_account_id)
 from whatsauto.log import WhatsappLogger
 
-def make_registration_requests(work_dir, wav_wait_secs=240, request_sleep=1):
+def make_registration_requests(work_dir, speech_dir, wav_wait_secs=240, request_sleep=1):
   numbers_file = path.join(work_dir, "numbers.txt")
   number_generator = read_numbers_file(numbers_file)
   logger = WhatsappLogger("/root/textvoice")
@@ -27,7 +27,7 @@ def make_registration_requests(work_dir, wav_wait_secs=240, request_sleep=1):
       sleep(wav_wait_secs)
       logger.log(logging.DEBUG, "Searching for wav with id : {}".format(id_))
       wav_file_found = False
-      for (root_dir, fileshere, dirshere) in traverse_dir(work_dir):
+      for (root_dir, fileshere, dirshere) in traverse_dir(speech_dir):
         for file_ in fileshere:
           if id_ in file_ and path.splitext(file_)[1].lower() == ".wav":
             logging.log(logging.INFO, "Found wav file <{}>".format(file_))
@@ -37,6 +37,7 @@ def make_registration_requests(work_dir, wav_wait_secs=240, request_sleep=1):
             account_id = get_account_id(work_dir, country_code+phone)
             open("/root/textvoice/success.txt", 'wt').write(country_code+phone + 
                 "," + token + "," + account_id + "\n")
+            remove(complete_wav_path)
             wav_file_found = True
             break
         if wav_file_found:
@@ -52,9 +53,10 @@ def make_registration_requests(work_dir, wav_wait_secs=240, request_sleep=1):
     
 if __name__ == "__main__":
   parser = ArgumentParser()
+  parser.add_argument("-s", "--speech_dir", help="the directory that contains .wav files")
   workdir_default = path.join(path.dirname(__file__), "workdir")
   parser.add_argument("-w", "--work_dir", default=workdir_default, help="folder that contains necessary files like numbers.txt, scripts and wav files")
   parser.add_argument("--wav_wait", type=int, default=240, help="time to wait for wav files to be downloaded (secs)")
   parser.add_argument("--req_sleep", type=int, default=1, help="time to sleep between whatsapp requests")
   args = parser.parse_args()
-  make_registration_requests(args.work_dir, args.wav_wait, args.req_sleep)
+  make_registration_requests(args.work_dir, args.speech_dir, args.wav_wait, args.req_sleep)

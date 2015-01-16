@@ -15,7 +15,6 @@ def make_registration_requests(numbers_file, wav_dir="/var/spool/asterisk/monito
                                wav_wait_secs=210, request_sleep=1):
   number_generator = read_numbers_file(numbers_file)
   for (country_code, phone, id_) in number_generator:
-    country_code, phone = next(number_generator)
     result = make_registration_request(country_code, phone)
     if result["status"] == "sent":
       # wait until wav file is retrieved

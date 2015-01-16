@@ -1,11 +1,11 @@
 '''
 Created on Jan 16, 2015
 '''
-
 import logging
+from logging import Logger
 from os import path
 
-class WhatsappLogger(logging.Logger):
+class WhatsappLogger(Logger):
   
   def __init__(self, *args, **kwargs):
     super(WhatsappLogger, self).__init__(*args, **kwargs)

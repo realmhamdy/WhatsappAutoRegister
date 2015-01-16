@@ -11,7 +11,7 @@ from os import walk as traverse_dir
 from os import path
 from whatsauto.util import (make_registration_request, read_numbers_file, get_text_from_speech,
                             get_token, get_account_id)
-from whatsauto.logging import WhatsappLogger
+from whatsauto.log import WhatsappLogger
 
 def make_registration_requests(numbers_file, wav_dir="/var/spool/asterisk/monitor/", 
                                wav_wait_secs=240, request_sleep=1):

@@ -35,7 +35,7 @@ def make_registration_requests(work_dir, speech_dir, wav_wait_secs=240, request_
             regcode = get_text_from_speech(work_dir, complete_wav_path)
             token = get_token()
             account_id = get_account_id(work_dir, country_code+phone)
-            open(path.join(work_dir, "success.txt"), 'wt').write(country_code+phone + 
+            open(path.join(work_dir, "success.txt"), "at").write(country_code+phone + 
                 "," + token + "," + account_id + "\n")
             remove(complete_wav_path)
             wav_file_found = True
@@ -46,7 +46,7 @@ def make_registration_requests(work_dir, speech_dir, wav_wait_secs=240, request_
         logger.log(logging.WARN, "Couldn't find file with suitable id")
     else: # unsuccessful number
       logger.log(logging.WARN, "Request was not successful. status '{}'".format(result["status"]))
-      open(path.join(work_dir, result["status"] + ".txt"), "wt").write(country_code+phone)
+      open(path.join(work_dir, result["status"] + ".txt"), "at").write(country_code+phone + "\n")
             
     # sleep between requests
     sleep(request_sleep)

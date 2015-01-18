@@ -27,7 +27,7 @@ def make_registration_requests(work_dir, speech_dir, wav_wait_secs=240, request_
       sleep(wav_wait_secs)
       logger.log(logging.DEBUG, "Searching for wav with id : {}".format(id_))
       wav_file_found = False
-      for (root_dir, fileshere, dirshere) in traverse_dir(speech_dir):
+      for (root_dir, dirshere, fileshere) in traverse_dir(speech_dir):
         for file_ in fileshere:
           if id_ in file_ and path.splitext(file_)[1].lower() == ".wav":
             logging.log(logging.INFO, "Found wav file <{}>".format(file_))

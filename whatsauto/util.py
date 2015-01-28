@@ -12,6 +12,7 @@ from tempfile import TemporaryFile
 import json
 from os import path
 from yowsup.registration import WACodeRequest
+from .youwsup_proxy.registration import WACodeRequest as WACodeRequest_Proxy
 
 def generate_random_phone_numbers():
   """
@@ -45,10 +46,14 @@ def generate_random_phone_numbers():
     next_phone_number = randrange(1111111, 9999999999)
     yield (choice(country_codes), str(next_phone_number))
     
-def make_registration_request(country_code, phone_number):
+def make_registration_request(country_code, phone_number, proxy=False):
   # country_code : str/unicode
   # phone_number : str/unicode
-  whatsapp_request = WACodeRequest(country_code, phone_number, method="voice")
+  if proxy:
+    request_class = WACodeRequest_Proxy
+  else:
+    request_class = WACodeRequest
+  whatsapp_request = request_class(country_code, phone_number, method="voice")
   result = whatsapp_request.send()
   return {key:value for key, value in result.iteritems() if value is not None}
 
@@ -57,6 +62,7 @@ def read_numbers_file(path_numbers):
   file_numbers = codecs.open(path_numbers, 'r', "utf-8")
   for line in file_numbers:
     if line:
+      line = line.strip()
       cc_phone, _id = line.split(',')
       country_code, phone = cc_phone.split('-')
       yield country_code, phone, _id
@@ -65,11 +71,11 @@ def get_text_from_speech(work_dir, wav_path):
   number_words = {"one":'1', "two":'2', "three":'3', "four":'4', "five":'5', 
                   "six":'6', "seven":'7', "eight":'8', "nine":'9', "zero":'0'}
   out = TemporaryFile()
-  info_command = Popen([path.join(work_dir, "speech_to_text"), wav_path], stdout=out)
+  info_command = Popen([path.join(work_dir, "speech-to-text"), work_dir, wav_path], stdout=out)
   info_command.wait()
   out.seek(0)
   result = json.loads(out.read())
-  speech = result["Words"]
+  speech = result["Recognition"]["NBest"][0]["Words"]
   numbers_found = ""
   for word in speech:
     if word in number_words:
@@ -87,7 +93,7 @@ def get_token(work_dir):
 
 def get_account_id(work_dir, phone_number):
   out = TemporaryFile()
-  wart_command = Popen(["xvfb-run", "mono", path.join(work_dir, "WART.exe"), "id" "raw=true" "number={}".format(phone_number)],
+  wart_command = Popen(["xvfb-run", "/opt/mono/bin/mono", path.join(work_dir, "WART.exe"), "-id", "raw=true" "number={}".format(phone_number)],
                        stdout=out)
   wart_command.wait()
   out.seek(0)

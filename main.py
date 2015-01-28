@@ -14,13 +14,13 @@ from whatsauto.util import (make_registration_request, read_numbers_file, get_te
                             get_token, get_account_id)
 from whatsauto.log import WhatsappLogger
 
-def make_registration_requests(work_dir, speech_dir, wav_wait_secs=240, request_sleep=1):
+def make_registration_requests(work_dir, speech_dir, wav_wait_secs=240, request_sleep=1, use_proxy=False):
   numbers_file = path.join(work_dir, "numbers.txt")
   number_generator = read_numbers_file(numbers_file)
   logger = WhatsappLogger(work_dir)
   for (country_code, phone, id_) in number_generator:
     logger.log(logging.DEBUG, "Registering {}-{}".format(country_code, phone))
-    result = make_registration_request(country_code, phone)
+    result = make_registration_request(country_code, phone, use_proxy)
     if result["status"] == "sent":
       logger.log(logging.INFO, "Request was successful. Waiting {} seconds".format(wav_wait_secs))
       # wait until wav file is retrieved
@@ -60,4 +60,4 @@ if __name__ == "__main__":
   parser.add_argument("--req_sleep", type=int, default=1, help="time to sleep between whatsapp requests")
   parser.add_argument("--proxy", action="store_true")
   args = parser.parse_args()
-  make_registration_requests(args.work_dir, args.speech_dir, args.wav_wait, args.req_sleep)
+  make_registration_requests(args.work_dir, args.speech_dir, args.wav_wait, args.req_sleep, use_proxy=args.proxy)
